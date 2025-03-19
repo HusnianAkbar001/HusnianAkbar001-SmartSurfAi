@@ -1,0 +1,6 @@
+#!C:\SmartSurfAI_1.0\smartsurf1.0-env\Scripts\python.exe
+import sys
+from bromate.scripts import main
+
+if __name__ == '__main__':
+    sys.exit(main())
