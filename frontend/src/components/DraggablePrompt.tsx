@@ -13,7 +13,9 @@ import {
   List,
   ListItem,
   ListItemText,
-  Divider
+  Divider,
+  Switch,
+  styled
 } from '@mui/material';
 import {
   Close as CloseIcon,
@@ -22,6 +24,19 @@ import {
   CloseFullscreen as CompressIcon
 } from '@mui/icons-material';
 import axios from 'axios';
+
+// Styled components
+const StyledSwitch = styled(Switch)(({ theme }) => ({
+  '& .MuiSwitch-switchBase.Mui-checked': {
+    color: '#9c27b0',
+    '&:hover': {
+      backgroundColor: 'rgba(156, 39, 176, 0.08)',
+    },
+  },
+  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+    backgroundColor: '#9c27b0',
+  },
+}));
 
 const DraggablePrompt: React.FC = () => {
   const [prompt, setPrompt] = useState('');
@@ -33,6 +48,7 @@ const DraggablePrompt: React.FC = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [position, setPosition] = useState({ x: window.innerWidth - 320, y: 20 });
   const [executionSteps, setExecutionSteps] = useState<string[]>([]);
+  const [isTask, setIsTask] = useState(true);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -140,46 +156,57 @@ const DraggablePrompt: React.FC = () => {
             height: isMaximized ? '100vh' : 'auto',
             borderRadius: isMaximized ? '0px' : '10px',
             overflow: 'hidden',
-            background: 'rgba(255, 255, 255, 0.95)',
-            backdropFilter: 'blur(10px)',
+            background: '#1a1b1e',
+            color: 'white',
             transition: 'all 0.3s ease-in-out',
-            border: '1px solid rgba(0, 0, 0, 0.1)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
             zIndex: 9999,
-            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
           }}
         >
           <Box
             className="drag-handle"
             sx={{
-              padding: '10px',
+              padding: '10px 16px',
               cursor: isMaximized ? 'default' : 'move',
-              background: 'rgba(243, 238, 255, 0.95)',
-              borderBottom: '1px solid rgba(149, 117, 205, 0.2)',
+              background: '#1a1b1e',
+              borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
+              height: '48px',
             }}
           >
             <Typography 
-              variant="subtitle2" 
+              variant="subtitle1" 
               sx={{ 
-                flex: 1,
-                color: '#7E57C2',
-                fontWeight: 500
+                color: '#fff',
+                fontWeight: 500,
+                fontSize: '1.1rem'
               }}
             >
-              SmartSurf Command {loading ? '(Executing...)' : ''}
+              SmartSurf
             </Typography>
+
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Typography variant="body2" sx={{ color: '#888' }}>Task</Typography>
+              <StyledSwitch
+                checked={!isTask}
+                onChange={() => setIsTask(!isTask)}
+                size="small"
+              />
+              <Typography variant="body2" sx={{ color: '#888' }}>Research</Typography>
+            </Box>
+
             <Box sx={{ display: 'flex', gap: '4px' }}>
               <IconButton
                 size="small"
                 onClick={handleMinimize}
                 sx={{ 
-                  color: '#9575CD',
+                  color: '#fff',
                   padding: '4px',
                   '&:hover': {
-                    color: '#7E57C2',
-                    background: 'rgba(126, 87, 194, 0.08)'
+                    background: 'rgba(255, 255, 255, 0.1)'
                   }
                 }}
               >
@@ -189,11 +216,10 @@ const DraggablePrompt: React.FC = () => {
                 size="small"
                 onClick={handleMaximize}
                 sx={{ 
-                  color: '#9575CD',
+                  color: '#fff',
                   padding: '4px',
                   '&:hover': {
-                    color: '#7E57C2',
-                    background: 'rgba(126, 87, 194, 0.08)'
+                    background: 'rgba(255, 255, 255, 0.1)'
                   }
                 }}
               >
@@ -203,11 +229,10 @@ const DraggablePrompt: React.FC = () => {
                 size="small"
                 onClick={handleClose}
                 sx={{ 
-                  color: '#9575CD',
+                  color: '#fff',
                   padding: '4px',
                   '&:hover': {
-                    color: '#d32f2f',
-                    background: 'rgba(211, 47, 47, 0.08)'
+                    background: 'rgba(255, 255, 255, 0.1)'
                   }
                 }}
               >
@@ -226,7 +251,7 @@ const DraggablePrompt: React.FC = () => {
                 flexDirection: 'column',
                 gap: '10px',
                 height: isMaximized ? 'calc(100vh - 52px)' : 'auto',
-                background: 'white',
+                background: '#1a1b1e',
               }}
             >
               <TextField
@@ -234,23 +259,23 @@ const DraggablePrompt: React.FC = () => {
                 multiline
                 rows={isMaximized ? 12 : 3}
                 variant="outlined"
-                placeholder="Enter your command here..."
+                placeholder="Ask SmartSurf anything..."
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 disabled={loading}
                 sx={{
                   flex: isMaximized ? 0.5 : 'none',
                   '& .MuiOutlinedInput-root': {
-                    color: '#333',
-                    background: 'white',
+                    color: '#fff',
+                    background: '#2a2b2e',
                     '& fieldset': {
-                      borderColor: 'rgba(0, 0, 0, 0.23)',
+                      borderColor: 'rgba(255, 255, 255, 0.1)',
                     },
                     '&:hover fieldset': {
-                      borderColor: '#7E57C2',
+                      borderColor: '#9c27b0',
                     },
                     '&.Mui-focused fieldset': {
-                      borderColor: '#7E57C2',
+                      borderColor: '#9c27b0',
                     },
                     '& textarea': {
                       height: isMaximized ? '100% !important' : 'auto !important',
@@ -264,9 +289,9 @@ const DraggablePrompt: React.FC = () => {
                 <Box
                   sx={{
                     flex: isMaximized ? 0.5 : 'none',
-                    border: '1px solid rgba(0, 0, 0, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
                     borderRadius: '4px',
-                    background: 'rgba(243, 238, 255, 0.3)',
+                    background: '#2a2b2e',
                     overflow: 'auto',
                     maxHeight: isMaximized ? 'none' : '200px',
                   }}
@@ -279,14 +304,14 @@ const DraggablePrompt: React.FC = () => {
                             primary={step}
                             sx={{
                               '& .MuiListItemText-primary': {
-                                color: '#7E57C2',
+                                color: '#fff',
                                 fontSize: '0.9rem',
                               }
                             }}
                           />
                         </ListItem>
                         {index < executionSteps.length - 1 && (
-                          <Divider variant="middle" sx={{ borderColor: 'rgba(126, 87, 194, 0.1)' }} />
+                          <Divider variant="middle" sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} />
                         )}
                       </React.Fragment>
                     ))}
@@ -296,7 +321,7 @@ const DraggablePrompt: React.FC = () => {
                           primary="Executing command..."
                           sx={{
                             '& .MuiListItemText-primary': {
-                              color: '#7E57C2',
+                              color: '#fff',
                               fontSize: '0.9rem',
                               fontStyle: 'italic'
                             }
@@ -314,16 +339,16 @@ const DraggablePrompt: React.FC = () => {
                 disabled={loading || !prompt.trim()}
                 sx={{
                   mt: 1,
-                  background: '#7E57C2',
+                  background: '#9c27b0',
                   '&:hover': {
-                    background: '#6A1B9A',
+                    background: '#7b1fa2',
                   },
                   '&:disabled': {
-                    background: 'rgba(0, 0, 0, 0.12)',
+                    background: 'rgba(255, 255, 255, 0.12)',
                   }
                 }}
               >
-                {loading ? 'Executing...' : 'Execute'}
+                Send
               </Button>
             </Box>
           </Collapse>
